@@ -1,0 +1,13 @@
+**.ipynb
+**.ipynb_checkpoints**
+.idea/
+
+**/__pycache__/
+LTF/__pycache__/__init__.cpython-310.pyc
+# For double encoded macintosh files
+src/._*.py
+._*
+.DS_Store
+.venv/
+**.log
+uv.lock
