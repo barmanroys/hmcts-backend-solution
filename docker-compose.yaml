@@ -5,6 +5,7 @@ services:
     restart: always
     environment:
       MYSQL_DATABASE: 'db'
+      # mysql -h 127.0.0.1 -p
       MYSQL_USER: 'barmanroys'
       MYSQL_PASSWORD: 'gandalf1234'
       MYSQL_ROOT_PASSWORD: 'root_password'
