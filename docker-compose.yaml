@@ -4,11 +4,11 @@ services:
     image: mysql
     restart: always
     environment:
-      MYSQL_DATABASE: 'db'
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
       # mysql -h 127.0.0.1 -p
-      MYSQL_USER: 'barmanroys'
-      MYSQL_PASSWORD: 'gandalf1234'
-      MYSQL_ROOT_PASSWORD: 'root_password'
+      MYSQL_USER: ${USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_RANDOM_ROOT_PASSWORD: 'true'
     ports:
       - '3306:3306'
     expose:
