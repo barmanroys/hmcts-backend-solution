@@ -7,11 +7,13 @@ import os
 from abc import ABC, abstractmethod
 from configparser import ConfigParser
 from contextlib import AbstractContextManager
-from typing import Iterable, Optional, cast, Any, Set
+from typing import Iterable, cast, Any
 
 import polars as pl
-from sqlalchemy import create_engine, Engine, Table, MetaData, Delete, delete, Update
+from sqlalchemy import create_engine, Engine, Table, MetaData, Delete, delete, Update, Insert
 from sqlalchemy.orm import Session, Query
+
+from task_def import Optional, ALLOWED_STATUS, Task
 
 logging.basicConfig(format='%(asctime)s|%(levelname)s: %(message)s',
                     datefmt='%H:%M:%S, %d-%b-%Y', level=logging.DEBUG)
@@ -41,6 +43,11 @@ URI: str = os.path.join(HOST_CONNECTOR, DATABASE)
 
 class AbstractPersistenceInterface(ABC):
     """Define the interface to persist data."""
+
+    @abstractmethod
+    def create_task(self, task: Task) -> None:
+        """Persist a new task in the database."""
+        raise NotImplementedError
 
     @abstractmethod
     def retrieve_tasks(self, tasks: Optional[Iterable[int]] = None) -> pl.LazyFrame:
@@ -116,9 +123,8 @@ class DBInterface(AbstractPersistenceInterface):
 
     def update_status(self, task: int, new_status: str) -> None:
         """Update the status of a task by task id."""
-        allowed: Set[str] = {'PENDING', 'WIP', 'DONE'}
         try:
-            assert new_status in allowed
+            assert new_status in ALLOWED_STATUS
         except AssertionError:
             message: str = f'Status {new_status} not allowed.'
             logging.error(msg=message)
@@ -129,3 +135,20 @@ class DBInterface(AbstractPersistenceInterface):
                 stmt: Update = table.update().where(table.columns[PRIM_KEY] == task).values(status=new_status)
                 logging.debug(msg=f'Updating task {task} status to {new_status}.')
                 session.execute(statement=stmt)
+
+    def create_task(self, task: Task) -> None:
+        """Persist a new task in the database."""
+        with self._engine_ as engine:
+            table: Table = Table(TABLE, MetaData(), autoload_with=engine)
+            stmt: Insert = table.insert().values([dict(task)])
+            with Session(bind=engine) as session, session.begin():
+                session.execute(statement=stmt)
+
+
+class InterfaceFactory:
+    """Factory class to generate a persistence client"""
+
+    @staticmethod
+    def get_sql_client() -> AbstractPersistenceInterface:
+        """Get the DBInterface"""
+        return DBInterface(engine=EngineContext(uri=URI))

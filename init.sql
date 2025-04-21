@@ -20,7 +20,7 @@ INSERT INTO db.tasks (title, description, status, due) VALUES
 ('Testing', 'Test the latest software build for quality assurance.', 'PENDING', '2025-04-29 16:00:00'),
 ('Marketing', 'Plan the marketing strategy for the upcoming product launch.', 'DONE', '2025-04-20 10:00:00'),
 ('Development Setup', 'Setup the development environment for new developers.', 'WIP', '2025-05-07 10:00:00'),
-('Requirement Gathering', 'Gather requirements for the new project from stakeholders.', 'PENDING', '2025-05-08 12:00:00'),
-('Server Issue Check', 'Check the server logs for any ongoing issues.', 'DONE', '2025-04-30 09:00:00'),
+('Requirements', 'Gather requirements for the new project from stakeholders.', 'PENDING', '2025-05-08 12:00:00'),
+('Server Issue', 'Check the server logs for any ongoing issues.', 'DONE', '2025-04-30 09:00:00'),
 ('Team-Building', 'Organize the logistics for the upcoming team-building event.', 'PENDING', '2025-05-09 15:00:00'),
 ('Design Mockup', 'Review the latest design mockups for feedback.', 'WIP', '2025-05-10 14:00:00');
