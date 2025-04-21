@@ -17,7 +17,7 @@ class Task(BaseModel):
     """Define the class tasks with appropriate constraints on the field."""
     title: str
     description: Optional[str] = None
-    status: str
+    status: str = 'PENDING'
     due: datetime
 
     @field_validator('title')

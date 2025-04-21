@@ -13,11 +13,13 @@ concurrent processing and withstand moderate user traffic.
 Author: Barman Roy, Swagato
 """
 import http
+from typing import List
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from uvicorn import run
 
-from db_interface import cast
+from db_interface import cast, Task, InterfaceFactory, Optional, AbstractPersistenceInterface, pl, os
 
 DESCRIPTION: str = """
 A basic ASGI for CRUD on a database of tasks 
@@ -43,5 +45,26 @@ app.add_middleware(middleware_class=CORSMiddleware,
                    allow_headers=origins)
 
 FAILURE: int = cast(typ=int, val=http.HTTPStatus.BAD_REQUEST.value)
-ACCEPTED: int = cast(typ=int, val=http.HTTPStatus.ACCEPTED.value)
-NOT_FOUND: int = cast(typ=int, val=http.HTTPStatus.NOT_FOUND.value)
+CREATED: int = cast(typ=int, val=http.HTTPStatus.CREATED.value)
+DELETED: int = cast(typ=int, val=http.HTTPStatus.NO_CONTENT.value)
+
+
+@app.post(path='/create_task/', status_code=CREATED)
+async def create_task(task: Task) -> None:
+    """Persist a new task in the database."""
+    db_client: AbstractPersistenceInterface = InterfaceFactory().get_sql_client()
+    db_client.create_task(task=task)
+
+
+@app.post(path='/retrieve_tasks/')
+async def retrieve_tasks(tasks: Optional[List[int]] = None) -> str:
+    """Retrieve the tasks in the form of a JSON."""
+    db_client: AbstractPersistenceInterface = InterfaceFactory().get_sql_client()
+    result: pl.DataFrame = await db_client.retrieve_tasks(tasks=tasks or None).collect_async()
+    return result.write_json()
+
+
+if __name__ == '__main__':
+    file: str = os.path.basename(p=__file__).split(sep='.')[0]
+    appname: str = f'{file}:app'
+    run(app=appname, host='0.0.0.0', port=8080, reload=True)
