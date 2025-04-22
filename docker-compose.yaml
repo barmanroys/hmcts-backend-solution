@@ -8,15 +8,9 @@ services:
       MYSQL_USER: ${USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_RANDOM_ROOT_PASSWORD: 'true'
-    ports:
-      - '3306:3306'
-    expose:
-      - '3306'
     volumes:
       # This directory is used to initialise the database. Use read-only mount
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
-
-
   app:
     build:
       context: ./  # Directory containing the Dockerfile
