@@ -33,7 +33,7 @@ You will be able to:
 * Delete tasks 
 """
 
-app: FastAPI = FastAPI(title='Crud on tasks database',
+app: FastAPI = FastAPI(title='CRUD on tasks database',
                        description=DESCRIPTION,
                        contact=dict(name='Barman Roy, Swagato',
                                     email='swagatopablo@aol.com'))
@@ -62,6 +62,20 @@ async def retrieve_tasks(tasks: Optional[List[int]] = None) -> str:
     db_client: AbstractPersistenceInterface = InterfaceFactory().get_sql_client()
     result: pl.DataFrame = await db_client.retrieve_tasks(tasks=tasks or None).collect_async()
     return result.write_json()
+
+
+@app.post(path='/update_status/')
+async def update_status(task: int, new_status: str) -> None:
+    """Update the status of a task."""
+    db_client: AbstractPersistenceInterface = InterfaceFactory().get_sql_client()
+    db_client.update_status(task=task, new_status=new_status)
+
+
+@app.delete(path='/delete_task/', status_code=DELETED)
+async def delete_task(task: int) -> None:
+    """Delete a task."""
+    db_client: AbstractPersistenceInterface = InterfaceFactory().get_sql_client()
+    db_client.delete_task(task=task)
 
 
 if __name__ == '__main__':

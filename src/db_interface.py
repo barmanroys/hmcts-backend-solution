@@ -117,6 +117,7 @@ class DBInterface(AbstractPersistenceInterface):
         with self._engine_ as engine:
             table: Table = Table(TABLE, MetaData(), autoload_with=engine)
             with Session(bind=engine) as session, session.begin():
+                # noinspection PyTypeChecker
                 stmt: Delete = delete(table=table).where(table.columns[PRIM_KEY] == task)
                 logging.debug(msg=f'Deleting task id {task}.')
                 session.execute(statement=stmt)
@@ -132,6 +133,7 @@ class DBInterface(AbstractPersistenceInterface):
         with self._engine_ as engine:
             table: Table = Table(TABLE, MetaData(), autoload_with=engine)
             with Session(bind=engine) as session, session.begin():
+                # noinspection PyTypeChecker
                 stmt: Update = table.update().where(table.columns[PRIM_KEY] == task).values(status=new_status)
                 logging.debug(msg=f'Updating task {task} status to {new_status}.')
                 session.execute(statement=stmt)
