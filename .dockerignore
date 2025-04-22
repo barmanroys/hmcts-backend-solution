@@ -15,3 +15,5 @@ src/*_test.py
 .venv/**
 Dockerfile
 uv.lock
+docker-compose.yaml
+*.sql

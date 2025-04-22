@@ -30,9 +30,9 @@ DUE: str = config.get(section='columns', option='DUE')
 
 DIALECT: str = config.get(section='db', option='DIALECT', raw=True)
 DRIVER: str = config.get(section='db', option='DRIVER', raw=True)
-DB_USERNAME: str = os.environ['USER']
+DB_USERNAME: str = os.environ['MYSQL_USER']
 DB_PASSWORD: str = os.environ['MYSQL_PASSWORD']
-HOST: str = config.get(section='db', option='HOST', raw=True)
+HOST: str = os.environ['MYSQL_HOST']
 PORT: int = int(config.get(section='db', option='PORT', raw=True))
 TABLE: str = config.get(section='db', option='TABLE', raw=True)
 DATABASE: str = os.environ['MYSQL_DATABASE']
